@@ -1,26 +1,43 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePomodoroDto } from './dto/create-pomodoro.dto';
 import { UpdatePomodoroDto } from './dto/update-pomodoro.dto';
+import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class PomodoroService {
-  create(createPomodoroDto: CreatePomodoroDto) {
-    return 'This action adds a new pomodoro';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(data: CreatePomodoroDto) {
+    return await this.prisma.pomodoro.create({
+      data: {
+        ...data,
+      },
+    });
   }
 
-  findAll() {
-    return `This action returns all pomodoro`;
+  async findAll() {
+    return await this.prisma.pomodoro.findMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} pomodoro`;
+  async findOne(id: number) {
+    return await this.prisma.pomodoro.findUnique({
+      where: {
+        idPomodoro: id,
+      },
+    });
   }
 
-  update(id: number, updatePomodoroDto: UpdatePomodoroDto) {
-    return `This action updates a #${id} pomodoro`;
+  async update(id: number, data: UpdatePomodoroDto) {
+    return await this.prisma.pomodoro.update({
+      where: { idPomodoro: id },
+      data,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} pomodoro`;
+  async remove(id: number) {
+    await this.prisma.pomodoro.delete({
+      where: { idPomodoro: id },
+    });
+    return `Pomodoro ${id} removido`;
   }
 }

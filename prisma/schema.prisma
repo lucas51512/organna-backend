@@ -11,10 +11,18 @@ datasource db {
 }
 
 model Usuario {
-  idUsuario         Int @default(autoincrement()) @id
+  idUsuario         Int @id @default(autoincrement())
   nomeUsuario       String
-  emailUsuario      String
-  senhaUsuario      String
+  dataNascimento    String
+  numeroCelular     String
+  
+  emailUsuario      String @unique
+  hash              String
+  
+  pessoa            Pessoa? @relation(fields: [pessoaIdFk], references: [idPessoa])
+  pessoaIdFk          Int? @unique
+
+  @@map("Usuarios")
 }
 
 model Pomodoro {
@@ -54,4 +62,14 @@ model Etiqueta {
   nomeEtiqueta        String
   corEtiqueta         String
   //prioridadeEtiqueta  Prioridade
+}
+
+model Pessoa {
+  idPessoa            Int @id @default(autoincrement())
+  nomePessoa          String
+  fonePessoa          String
+  emailPessoa         String
+  senhaPessoa         String
+  usuario             Usuario?
+  idUsuario           Int? @unique
 }

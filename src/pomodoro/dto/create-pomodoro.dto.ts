@@ -1,1 +1,4 @@
-export class CreatePomodoroDto {}
+export class CreatePomodoroDto {
+  tempoDescanso: number;
+  tempoTrabalho: number;
+}

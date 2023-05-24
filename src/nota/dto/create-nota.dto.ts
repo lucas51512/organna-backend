@@ -1,1 +1,4 @@
-export class CreateNotaDto {}
+export class CreateNotaDto {
+  tituloNota: string;
+  descricaoNota: string;
+}
