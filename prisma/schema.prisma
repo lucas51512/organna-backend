@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,65 +8,85 @@ datasource db {
 }
 
 model Usuario {
-  idUsuario         Int @id @default(autoincrement())
+  idUsuario         Int       @id @default(autoincrement())
   nomeUsuario       String
-  dataNascimento    String
-  numeroCelular     String
+  dataNascimento    DateTime? @updatedAt
+  numeroCelular     String?
   
-  emailUsuario      String @unique
+  emailUsuario      String   @unique
   hash              String
   
-  pessoa            Pessoa? @relation(fields: [pessoaIdFk], references: [idPessoa])
-  pessoaIdFk          Int? @unique
+  pessoa            Pessoa?  @relation(fields: [pessoaIdFk], references: [idPessoa])
+  pessoaIdFk        Int?
+  
+  tarefas           Tarefa[] @relation("UsuarioTarefa")
+  pomodoros         Pomodoro[] @relation("UsuarioPomodoro")
+  notas             Nota[]   @relation("UsuarioNota")
+  etiquetas         Etiqueta[] @relation("UsuarioEtiqueta")
 
-  @@map("Usuarios")
+  @@map(name: "usuarios")
 }
 
 model Pomodoro {
-  idPomodoro          Int @default(autoincrement()) @id
-  tempoDescanso       Float
-  tempoTrabalho       Float
-  //tarefa?             Tarefa
+  idPomodoro          Int       @default(autoincrement()) @id
+  tempoDescanso       Float?
+  tempoTrabalho       Float?
+  usuarioIdFk         Int?
+
+  usuario             Usuario?  @relation("UsuarioPomodoro", fields: [usuarioIdFk], references: [idUsuario])
+  
+  @@map(name: "pomodoros")
 }
 
 model Tarefa {
-  idTarefa            Int @default(autoincrement()) @id
+  idTarefa            Int       @default(autoincrement()) @id
   nomeTarefa          String
-  inicioTarefa        DateTime
-  vencimentoTarefa    DateTime
+  inicioTarefa        DateTime? @updatedAt
+  vencimentoTarefa    DateTime? @updatedAt
   descricaoTarefa     String
   comentarioTarefa    String
-  //subTarefa           Tarefa
+
+  usuarios            Usuario[] @relation("UsuarioTarefa")
+  
+  @@map(name: "tarefas")
 }
 
 model Prioridade {
-  idPrioridade        Int @default(autoincrement()) @id
+  idPrioridade        Int       @default(autoincrement()) @id
   nomePrioridade      String
   descricaoPrioridade String
   corPrioridade       String
+  
+  @@map(name: "prioridades")
 }
 
 model Nota {
-  idNota             Int @default(autoincrement()) @id
+  idNota             Int       @default(autoincrement()) @id
   tituloNota         String
   descricaoNota      String
-  //prioridadeNota     Prioridade
-  //subNotas[]         Nota
+
+  usuarios            Usuario[] @relation("UsuarioNota")
+  
+  @@map(name: "notas")
 }
 
 model Etiqueta {
-  idEtiqueta          Int @default(autoincrement()) @id
+  idEtiqueta          Int       @default(autoincrement()) @id
   nomeEtiqueta        String
   corEtiqueta         String
-  //prioridadeEtiqueta  Prioridade
+
+  usuarios            Usuario[] @relation("UsuarioEtiqueta")
+  
+  @@map(name: "etiquetas")
 }
 
 model Pessoa {
-  idPessoa            Int @id @default(autoincrement())
+  idPessoa            Int       @id @default(autoincrement())
   nomePessoa          String
   fonePessoa          String
   emailPessoa         String
   senhaPessoa         String
-  usuario             Usuario?
-  idUsuario           Int? @unique
+  usuario             Usuario[]
+  
+  @@map(name: "pessoas")
 }

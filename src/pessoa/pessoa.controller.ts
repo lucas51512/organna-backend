@@ -24,7 +24,7 @@ export class PessoaController {
     @GetUser('idUsuario') idUsuarioFk: number,
     @Body() createPessoaDto: CreatePessoaDto,
   ) {
-    return this.pessoaService.create(idUsuarioFk, createPessoaDto);
+    return this.pessoaService.create(createPessoaDto);
   }
 
   @Get()

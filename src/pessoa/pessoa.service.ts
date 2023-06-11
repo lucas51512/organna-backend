@@ -7,11 +7,14 @@ import { PrismaService } from 'src/prisma.service';
 export class PessoaService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(idUsuario: number, createPessoaDto: CreatePessoaDto) {
+  async create(data: CreatePessoaDto) {
     return await this.prisma.pessoa.create({
       data: {
-        idUsuario,
-        ...createPessoaDto,
+        nomePessoa: data.nomePessoa,
+        fonePessoa: data.fonePessoa,
+        emailPessoa: data.emailPessoa,
+        senhaPessoa: data.senhaPessoa,
+        usuario: { connect: { idUsuario: data.usuarioId } },
       },
     });
   }
